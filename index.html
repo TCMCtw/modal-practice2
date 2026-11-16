@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>調式練習二 · Modal Drill 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#2FBFAA; --gold:#E8A33D; --ink:#EDEDE8; --dim:#9AA3A0;
+  --card:#1E2426; --card2:#232B2D; --line:#33403F;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{
+  font-family:'Noto Sans TC',-apple-system,sans-serif;color:var(--ink);
+  background:radial-gradient(120% 90% at 50% 0%, #2A3436 0%, #1B2123 45%, #141819 100%);
+  min-height:100vh;line-height:1.65;
+}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px}
+header{text-align:center;margin-bottom:26px}
+h1{font-family:'Noto Serif TC',serif;font-size:1.75rem;font-weight:700;letter-spacing:.04em}
+h1 .en{display:block;font-size:.95rem;color:var(--teal);letter-spacing:.14em;font-family:'Noto Sans TC';font-weight:500;margin-top:4px}
+.sub{color:var(--dim);font-size:.86rem;margin-top:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px;margin-bottom:18px}
+h2{font-family:'Noto Serif TC',serif;font-size:1.12rem;color:var(--gold);margin-bottom:10px;letter-spacing:.05em}
+h2 .en{font-family:'Noto Sans TC';font-size:.78rem;color:var(--dim);font-weight:500;letter-spacing:.1em;margin-left:8px}
+.explain p{font-size:.92rem;margin-bottom:10px}
+.explain p.en{color:var(--dim);font-size:.84rem}
+.explain b{color:var(--teal);font-weight:700}
+/* key picker */
+.keys{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin:6px 0 16px}
+.keys button{
+  font-family:'Noto Sans TC';font-size:.95rem;font-weight:700;color:var(--ink);
+  background:var(--card2);border:1px solid var(--line);border-radius:10px;
+  padding:10px 0;cursor:pointer;transition:all .15s;
+}
+.keys button.on{background:var(--teal);border-color:var(--teal);color:#10201D}
+.keys-label{font-size:.82rem;color:var(--dim);margin-bottom:6px}
+.keys-label b{color:var(--ink)}
+/* player */
+.player{display:flex;align-items:center;gap:14px}
+.playbtn{
+  width:64px;height:64px;min-width:64px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--gold);color:#2A1D08;font-size:1.5rem;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 18px rgba(232,163,61,.35);transition:transform .12s;
+}
+.playbtn:active{transform:scale(.94)}
+.pinfo{flex:1}
+.ptitle{font-size:.92rem;font-weight:700}
+.ptitle .en{color:var(--dim);font-weight:400;font-size:.8rem;margin-left:6px}
+.bar{height:6px;background:#101617;border-radius:3px;margin-top:8px;position:relative;cursor:pointer}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:var(--teal);border-radius:3px}
+.bar .seg{position:absolute;top:-2px;bottom:-2px;width:1px;background:#33403F}
+.ptime{font-size:.74rem;color:var(--dim);margin-top:5px;display:flex;justify-content:space-between}
+.hint{font-size:.78rem;color:var(--dim);margin-top:12px}
+.hint b{color:var(--gold);font-weight:500}
+/* mode cards */
+.mode{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;transition:border-color .2s, background .2s}
+.mode.playing{border-color:var(--teal);background:#20302E}
+.mhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.mnum{font-family:'Noto Serif TC';color:var(--gold);font-size:.85rem}
+.mname{font-family:'Noto Serif TC';font-size:1.06rem;font-weight:700}
+.malias{font-size:.8rem;color:var(--teal)}
+.mparent{margin-left:auto;font-size:.76rem;color:var(--dim)}
+.mparent b{color:var(--ink);font-weight:500}
+/* solfege grid */
+.sol{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.cell{text-align:center;border-radius:8px;padding:6px 0 5px;background:var(--card2);transition:background .12s}
+.cell .dot{height:10px;font-size:10px;line-height:10px;color:var(--gold)}
+.cell .syl{font-size:.86rem;font-weight:700;line-height:1.3}
+.cell .num{font-size:.72rem;color:var(--dim);line-height:1.3}
+.cell.now{background:var(--teal)}
+.cell.now .syl{color:#10201D}
+.cell.now .num{color:#10201D}
+.cell.now .dot{color:#10201D}
+.mnote{font-size:.74rem;color:var(--dim);margin-top:8px}
+footer{text-align:center;color:var(--dim);font-size:.74rem;margin-top:30px;line-height:1.9}
+footer a{color:var(--teal);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>調式練習二<span class="en">MODAL DRILL 2 · SING-ALONG</span></h1>
+  <div class="sub">開口唱練習 · 七個調式,同一個起始音,上行下行交替 · Seven modes, one starting note, up and down</div>
+</header>
+
+<div class="card explain">
+  <h2>這是什麼?<span class="en">WHAT IS THIS</span></h2>
+  <p>在鋼琴上只彈白鍵,從不同的白鍵開始各彈七個音,就得到七種調式:從 <b>C</b> 開始是 <b>Ionian(大調)</b>,從 D 開始是 <b>Dorian</b>,從 E 開始是 <b>Phrygian</b>,從 F 開始是 <b>Lydian</b>,從 G 開始是 <b>Mixolydian</b>,從 A 開始是 <b>Aeolian(自然小調)</b>,從 B 開始是 <b>Locrian</b>。</p>
+  <p>這個練習把七種調式<b>移到同一個起始音</b>上,上行、下行交替各唱一次:大調 Ionian、弗里吉安 Phrygian、米索利底安 Mixolydian、洛克里安 Locrian 上行,多里安 Dorian、利底安 Lydian、自然小調 Aeolian 下行。唱名用「首調」:照每個調式背後的大調(母調)來唱,所以同一個起始音,七種調式會從七個不同的唱名開始。</p>
+  <p class="en">Play only the white keys on a piano, seven notes at a time, starting from a different white key each time, and you get the seven modes: from C comes Ionian (the major scale), from D Dorian, from E Phrygian, from F Lydian, from G Mixolydian, from A Aeolian (the natural minor), from B Locrian. This drill moves all seven modes onto the same starting note and sings them alternating up and down: Ionian, Phrygian, Mixolydian and Locrian ascend; Dorian, Lydian and Aeolian descend. Sing in movable do, using the solfege of each mode's parent major scale, so the same starting note begins on seven different syllables.</p>
+</div>
+
+<div class="card">
+  <h2>練習<span class="en">PRACTICE</span></h2>
+  <div class="keys-label">起始音 <b>Starting note</b>(唱名、簡譜不變,音高跟著換 · solfege stays, pitch moves)</div>
+  <div class="keys" id="keys"></div>
+  <div class="player">
+    <button class="playbtn" id="playBtn" aria-label="play">▶</button>
+    <div class="pinfo">
+      <div class="ptitle"><span id="nowKey">C</span> 開始 · 七種調式<span class="en">all seven modes</span></div>
+      <div class="bar" id="bar"><div class="fill" id="fill"></div></div>
+      <div class="ptime"><span id="tcur">0:00</span><span id="tdur">0:56</span></div>
+    </div>
+  </div>
+  <div class="hint">跟著音檔<b>開口唱</b>。播放時會標出現在的調式和唱名;點任何一個調式可以從那裡開始。<br>Sing out loud with the audio. The current mode and syllable light up as it plays; tap any mode to start from there.</div>
+</div>
+
+<div id="modes"></div>
+
+<div class="card explain">
+  <h2>怎麼練<span class="en">HOW TO PRACTISE</span></h2>
+  <p>先聽一遍,第二遍開始跟著唱。唱名的「do」永遠是母調的主音:例如 Dorian 從「re」開始,因為它是母調的第二音。下行的調式從高八度的同一個音往下唱。七種調式都唱完,換一個起始音再來。</p>
+  <p class="en">Listen once, then sing along. "Do" is always the tonic of the parent major scale: Dorian starts on "re" because it begins on the second note of its parent scale. Descending modes start from the same note one octave higher and sing down. After all seven modes, pick a new starting note and go again.</p>
+</div>
+
+<footer>
+  調式練習二 · Modal Drill 2 — 測試版 Test build<br>
+  © 2026 朱源雷 Ray Chu · <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hant">CC BY-NC 4.0</a>
+</footer>
+</div>
+
+<audio id="au" preload="auto"></audio>
+
+<script>
+const KEYS = [
+  {id:'Ab', label:'A♭'}, {id:'A', label:'A'}, {id:'Bb', label:'B♭'},
+  {id:'B', label:'B'}, {id:'C', label:'C'}, {id:'Db', label:'D♭'},
+  {id:'D', label:'D'}, {id:'Eb', label:'E♭'}, {id:'E', label:'E'}
+];
+// pitch-class names, flat-leaning
+const PC = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+const PCIDX = {'C':0,'Db':1,'D':2,'Eb':3,'E':4,'F':5,'Gb':6,'G':7,'Ab':8,'A':9,'Bb':10,'B':11};
+// syllable -> jianpu number
+const NUM = {do:'1',re:'2',mi:'3',fa:'4',sol:'5',la:'6',ti:'7'};
+// modes in drill order. off = parent major offset in semitones from the start note; dir = up/down
+const MODES = [
+  {en:'Ionian',     zh:'大調',   alias:'Ionian',     syl:'do', off:0,  dir:'up'},
+  {en:'Dorian',     zh:'多里安',  alias:'Dorian',     syl:'re', off:-2, dir:'down'},
+  {en:'Phrygian',   zh:'弗里吉安',alias:'Phrygian',   syl:'mi', off:-4, dir:'up'},
+  {en:'Lydian',     zh:'利底安',  alias:'Lydian',     syl:'fa', off:-5, dir:'down'},
+  {en:'Mixolydian', zh:'米索利底安',alias:'Mixolydian',syl:'sol', off:-7, dir:'up'},
+  {en:'Aeolian',    zh:'自然小調', alias:'Aeolian',    syl:'la', off:3,  dir:'down'},
+  {en:'Locrian',    zh:'洛克里安', alias:'Locrian',    syl:'ti', off:1,  dir:'up'},
+];
+const ORDER = ['do','re','mi','fa','sol','la','ti'];
+const SEC = 8;            // seconds per mode (8 notes, 1s each)
+const TOTAL = 56;         // 7 modes * 8s
+let curKey = 'C';
+
+const au = document.getElementById('au');
+const playBtn = document.getElementById('playBtn');
+const fill = document.getElementById('fill');
+const bar = document.getElementById('bar');
+const tcur = document.getElementById('tcur');
+
+function buildKeys(){
+  const el = document.getElementById('keys');
+  el.innerHTML = '';
+  KEYS.forEach(k=>{
+    const b = document.createElement('button');
+    b.textContent = k.label;
+    if(k.id===curKey) b.classList.add('on');
+    b.onclick = ()=>{ curKey = k.id; loadKey(); buildKeys(); updateParents(); };
+    el.appendChild(b);
+  });
+}
+function loadKey(){
+  au.src = 'audio/drill2-' + curKey + '.m4a';
+  au.load();
+  pause();
+  au.currentTime = 0;
+  document.getElementById('nowKey').textContent = KEYS.find(k=>k.id===curKey).label;
+}
+function sylRow(mode){
+  const start = ORDER.indexOf(mode.syl);
+  let cells = [];
+  if(mode.dir === 'up'){
+    // 8 syllables ascending from the mode's start syllable; dot = upper octave (passes ti)
+    for(let i=0;i<8;i++){
+      const s = ORDER[(start+i)%7];
+      const hi = (start+i) >= 7;
+      cells.push({syl:s, num:NUM[s], hi:hi});
+    }
+  } else {
+    // 8 syllables descending from the start syllable one octave up; dot = upper octave (until passing do)
+    for(let i=0;i<8;i++){
+      const s = ORDER[((start-i)%7+7)%7];
+      const hi = (start-i) >= 0;
+      cells.push({syl:s, num:NUM[s], hi:hi});
+    }
+  }
+  return cells;
+}
+function buildModes(){
+  const wrap = document.getElementById('modes');
+  wrap.innerHTML = '';
+  MODES.forEach((m,mi)=>{
+    const div = document.createElement('div');
+    div.className = 'mode'; div.id = 'mode'+mi;
+    const cells = sylRow(m).map((c,ci)=>
+      `<div class="cell" id="c${mi}-${ci}"><div class="dot">${c.hi?'•':''}</div><div class="syl">${c.syl}</div><div class="num">${c.num}</div></div>`
+    ).join('');
+    const dirLabel = m.dir==='up' ? '上行 ascending' : '下行 descending';
+    div.innerHTML = `
+      <div class="mhead">
+        <span class="mnum">${mi+1}</span>
+        <span class="mname"><span class="klabel">${PC[PCIDX[curKey]]}</span> ${m.en}</span>
+        <span class="malias">${m.zh}</span>
+        <span class="mparent">母調 <b class="plabel"></b> 大調 · starts on “${m.syl}”</span>
+      </div>
+      <div class="sol">${cells}</div>
+      <div class="mnote">第 ${mi*4+1}–${mi*4+4} 小節 · bars ${mi*4+1}–${mi*4+4} · ${dirLabel}</div>`;
+    div.onclick = ()=>{ au.currentTime = mi*SEC + 0.001; play(); };
+    wrap.appendChild(div);
+  });
+  updateParents();
+}
+function updateParents(){
+  MODES.forEach((m,mi)=>{
+    const pc = ((PCIDX[curKey] + m.off) % 12 + 12) % 12;
+    document.querySelector('#mode'+mi+' .plabel').textContent = PC[pc];
+    document.querySelector('#mode'+mi+' .klabel').textContent = PC[PCIDX[curKey]];
+  });
+}
+function fmt(t){ t=Math.max(0,Math.floor(t)); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0'); }
+function play(){ au.play().catch(()=>{}); }
+function pause(){ au.pause(); playBtn.textContent='▶'; }
+playBtn.onclick = ()=>{ if(au.paused){ play(); } else { pause(); } };
+au.onplay = ()=>{ playBtn.textContent='❚❚'; };
+au.onpause = ()=>{ playBtn.textContent='▶'; };
+bar.onclick = (e)=>{
+  const r = bar.getBoundingClientRect();
+  au.currentTime = Math.min(TOTAL-0.05, Math.max(0,(e.clientX-r.left)/r.width*TOTAL));
+};
+au.addEventListener('timeupdate', ()=>{
+  let t = au.currentTime;
+  if(t >= TOTAL){ pause(); au.currentTime = 0; t = 0; }
+  fill.style.width = (t/TOTAL*100)+'%';
+  tcur.textContent = fmt(t);
+  const mi = Math.min(6, Math.floor(t/SEC));
+  const ni = Math.min(7, Math.floor((t - mi*SEC)));
+  MODES.forEach((m,i)=>document.getElementById('mode'+i).classList.toggle('playing', i===mi && !au.paused));
+  document.querySelectorAll('.cell.now').forEach(c=>c.classList.remove('now'));
+  if(!au.paused){
+    const c = document.getElementById('c'+mi+'-'+ni);
+    if(c) c.classList.add('now');
+  }
+});
+au.addEventListener('ended', ()=>{ pause(); au.currentTime=0; });
+// segment ticks on the bar
+for(let i=1;i<7;i++){
+  const s = document.createElement('div');
+  s.className='seg'; s.style.left=(i/7*100)+'%';
+  bar.appendChild(s);
+}
+buildKeys(); buildModes(); loadKey();
+</script>
+</body>
+</html>
